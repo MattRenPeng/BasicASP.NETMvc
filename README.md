@@ -43,7 +43,8 @@ doc：https://www.jianshu.com/p/5f6156cacc76
     doc:
     https://docs.microsoft.com/en-us/aspnet/mvc/overview/getting-started/lifecycle-of-an-aspnet-mvc-5-application
     https://www.cnblogs.com/xiao-bei/p/5165884.html
-    
+ 
+I have fininshed all above at 2021-08-02
 ## Some homework
     First,you should finish the task in the part of Basic Point
     Then you can search "# homework " in this project to finish it
