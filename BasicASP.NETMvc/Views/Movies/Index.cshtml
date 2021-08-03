@@ -1,44 +1,75 @@
 ﻿@model IEnumerable<BasicASP.NETMvc.Models.Movie>
-@{
-    ViewBag.Title = "Index";
-}
+@{ ViewBag.Title = "Index"; }
 <h2>Movies</h2>
 <p>
-    
-    @* # homework 4 -- add button for redirected to create page  *@
 
+    @* # homework 4 -- add button for redirected to create page  *@
+    @Html.ActionLink("Create New", "Create")
     @using (Html.BeginForm("Index", "Movies", FormMethod.Get))
     {
-        <p>
-            Genre: @Html.DropDownList("MovieGenre", "All")
-            Title: @Html.TextBox("SearchString")
-            <input type="submit" value="Filter" />
-        </p>
-    }
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.ReleaseDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Genre)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Rating)
-        </th>
+<p>
+    Genre: @Html.DropDownList("MovieGenre", "All")
+    Title: @Html.TextBox("SearchString")
+    <input type="submit" value="Filter" />
+</p>}
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
 
-        <th></th>
-    </tr>
-    @* # homework 2 -- show the movies on this site  *@
-    
-    @* # homework 6 -- add Edit,Details,Delete buttons every line and them shou link to action *@
-    
+            <th></th>
+        </tr>
+        @* # homework 2 -- show the movies on this site  *@
+        @if (Model.Count() == 0)
+        {
+           <tr>
+               <td colspan="6">
+                   No Data
+               </td>
+           </tr>
+        }
+        else
+        {
+            foreach (BasicASP.NETMvc.Models.Movie item in Model)
+            {
+                <tr>
+                    <td width="35%">
+                        @item.Title
+                    </td>
+                    <td width="15%">
+                        @item.ReleaseDate.ToString("yyyy-MM-dd")
+                    </td>
+                    <td width="10%">
+                        @item.Genre
+                    </td>
+                    <td width="10%">
+                       @((item?.Price)?.ToString())
+                    </td>
+                    <td width="10%">
+                        @item.Rating
+                    </td>
+                    @* # homework 6 -- add Edit,Details,Delete buttons every line and them shou link to action *@
+                <td width="20%">
+                    @Html.ActionLink("Edit|", "Edit", new { id = item.ID })
+                    @Html.ActionLink("Details|", "Details", new { id = item.ID })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                </td>
+                </tr>
+            }
+         }
 
-</table>
+    </table>

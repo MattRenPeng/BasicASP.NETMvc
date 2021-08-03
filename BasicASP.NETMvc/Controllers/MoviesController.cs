@@ -9,7 +9,7 @@ using BasicASP.NETMvc.Models;
 
 namespace BasicASP.NETMvc.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class MoviesController : Controller
     {
         private MovieDBContext db = new MovieDBContext();
@@ -27,17 +27,20 @@ namespace BasicASP.NETMvc.Controllers
             ViewBag.MovieGenre = new SelectList(genreLst);
 
             // # homework 3 -- read movies data from loacl-db,please use linq
+             var movies_query = from d in db.Movies
+                          orderby d.Genre
+                          select d;
 
-            
+
             // # homework 7 -- filte movies data by conditions
-            
-
-            return View();
+           List <Movie> movies= movies_query.Where(f => (string.IsNullOrEmpty(movieGenre) || f.Genre == movieGenre ) && (string.IsNullOrEmpty(searchString) || (f.Title ?? "").Contains(searchString))).ToList();
+            return View(movies);
         }
 
         [HttpPost]
         public string Index(FormCollection fc, string searchString)
         {
+            
             return "<h3> From [HttpPost]Index: " + searchString + "</h3>";
         }
 
@@ -71,8 +74,15 @@ namespace BasicASP.NETMvc.Controllers
             Movie movie)
         {
             // # homework 5 -- save data to loacl-db
-
-            return View(movie);
+            if (ModelState.IsValid)
+            {
+                db.Movies.Add(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else
+                return View(movie);
+            
         }
 
         // GET: Movies/Edit/5
@@ -83,8 +93,13 @@ namespace BasicASP.NETMvc.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            Movie movie = db.Movies.Find(id);
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
 
-            return View();
+            return View(movie);
         }
 
         // POST: Movies/Edit/5
@@ -108,9 +123,14 @@ namespace BasicASP.NETMvc.Controllers
         {
             // # homework 9 -- find data by id 
             // when id is null ,return HttpStatusCode.BadRequest;
-            
-            
-            return View();
+            if (id == null)
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            Movie movie = db.Movies.Find(id);
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
+            return View(movie);
         }
 
         // POST: Movies/Delete/5
@@ -119,6 +139,10 @@ namespace BasicASP.NETMvc.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Movie movie = db.Movies.Find(id);
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
             db.Movies.Remove(movie);
             db.SaveChanges();
             return RedirectToAction("Index");
